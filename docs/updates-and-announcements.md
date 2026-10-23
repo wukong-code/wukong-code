@@ -109,7 +109,7 @@ content, prompts, or personalized query parameters. The server still receives
 ordinary HTTPS metadata such as source IP and User-Agent.
 
 The update manifest request likewise contains no repository content. Native
-release downloads come from the public `mutnpc/wukong-code` GitHub Release.
+release downloads come from the public `wukong-code/wukong-code` GitHub Release.
 
 ## Compatibility
 
@@ -124,5 +124,5 @@ release that introduces that endpoint.
 
 - Latest version: `https://wukong.today/latest.json`
 - Announcements: `https://wukong.today/cli/announcements.json`
-- Releases: `https://github.com/mutnpc/wukong-code/releases`
+- Releases: `https://github.com/wukong-code/wukong-code/releases`
 - Changelog: [CHANGELOG.md](../CHANGELOG.md)

@@ -16,7 +16,7 @@ wukong            # then type: /loop add input validation to the signup form
 ```
 
 Free · no account · bring your own API key · macOS, Linux, Windows ·
-current release **[v0.1.1](https://github.com/mutnpc/wukong-code/releases/tag/v0.1.1)**
+current release **[v0.1.1](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.1)**
 
 ## Why Wukong
 
@@ -50,7 +50,7 @@ Loop while retaining the command surface and local BYOK product boundary of
   explainable provenance.
 
 The immutable
-[`v0.1.0-rc.1`](https://github.com/mutnpc/wukong-code/releases/tag/v0.1.0-rc.1)
+[`v0.1.0-rc.1`](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.0-rc.1)
 prerelease remains available as the candidate evidence snapshot. Check
 `wukong --version` when exact installed behavior matters.
 
@@ -65,7 +65,7 @@ curl -fsSL https://wukong.today/install.sh | sh
 ### Windows
 
 Download the matching Windows ZIP from the
-[v0.1.1 release](https://github.com/mutnpc/wukong-code/releases/tag/v0.1.1),
+[v0.1.1 release](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.1),
 extract `wukong.exe`, and add it to your `PATH`.
 
 Verify the installation:
@@ -196,9 +196,16 @@ Full documentation: [docs.wukong.today](https://docs.wukong.today)
 ## Support
 
 - Website: [wukong.today](https://wukong.today)
-- Issues: [github.com/mutnpc/wukong-code/issues](https://github.com/mutnpc/wukong-code/issues)
+- Issues: [github.com/wukong-code/wukong-code/issues](https://github.com/wukong-code/wukong-code/issues)
 - Email: [support@wukong.today](mailto:support@wukong.today)
 
 ## License
 
 This is proprietary software. See [LICENSE.md](./LICENSE.md).
+
+The roadmap calls for an independently usable open-source local CLI, with the
+website and operations backend remaining private. Source publication and the
+license transition have not happened; the current license still applies.
+The planned service path starts with scoped, one-off repository onboarding and
+acceptance support, followed by monthly support after repeat purchases. This
+does not announce a paid software plan or change the current Free + BYOK release.

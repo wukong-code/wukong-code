@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
-const EXPECTED_REPOSITORY = 'mutnpc/wukong-code';
+const EXPECTED_REPOSITORY = 'wukong-code/wukong-code';
 const EXACT_COMMIT_PATTERN = /^[a-f0-9]{40}$/;
 
 const repository = process.env.WUKONG_RELEASE_REPOSITORY;

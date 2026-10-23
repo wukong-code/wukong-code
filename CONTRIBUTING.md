@@ -4,7 +4,7 @@ Wukong CLI is a closed-source project. We do not accept code contributions.
 
 ## How you can help
 
-- **Report bugs**: [github.com/mutnpc/wukong-cli/issues](https://github.com/mutnpc/wukong-cli/issues)
+- **Report bugs**: [github.com/wukong-code/wukong-code/issues](https://github.com/wukong-code/wukong-code/issues)
 - **Request features**: open a GitHub issue describing your use case
 - **Report security issues**: see [SECURITY.md](./SECURITY.md)
 

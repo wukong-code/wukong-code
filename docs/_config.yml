@@ -28,11 +28,11 @@ nav_external_links:
     url: https://wukong.today/download
     hide_icon: false
   - title: GitHub
-    url: https://github.com/mutnpc/wukong-code
+    url: https://github.com/wukong-code/wukong-code
     hide_icon: false
 
 # Footer
-footer_content: '&copy; <a href="https://wukong.today">Wukong Code</a> · <a href="https://wukong.today/download">Download</a> · <a href="https://github.com/mutnpc/wukong-code">GitHub</a>'
+footer_content: '&copy; <a href="https://wukong.today">Wukong Code</a> · <a href="https://wukong.today/download">Download</a> · <a href="https://github.com/wukong-code/wukong-code">GitHub</a>'
 
 # SEO
 url: https://docs.wukong.today

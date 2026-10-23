@@ -33,7 +33,7 @@ function run(directory, environment = {}) {
     encoding: 'utf8',
     env: {
       ...process.env,
-      WUKONG_RELEASE_REPOSITORY: 'mutnpc/wukong-code',
+      WUKONG_RELEASE_REPOSITORY: 'wukong-code/wukong-code',
       WUKONG_RELEASE_COMMIT_SHA: 'a'.repeat(40),
       ...environment,
     },
@@ -46,7 +46,7 @@ test('writes a deterministic exact-commit marker for the stable docs channel', a
   assert.equal(result.status, 0, result.stderr);
   assert.deepEqual(JSON.parse(await readFile(resolve(directory, 'docs/_release.json'), 'utf8')), {
     version: '0.0.22',
-    repository: 'mutnpc/wukong-code',
+    repository: 'wukong-code/wukong-code',
     commitSha: 'a'.repeat(40),
   });
 });
@@ -62,7 +62,7 @@ test('fails closed instead of emitting a marker for an invalid commit identity',
 
 test('fails closed when the deployment repository identity is wrong', async () => {
   const directory = await fixture();
-  const result = run(directory, { WUKONG_RELEASE_REPOSITORY: 'mutnpc/wukong_web' });
+  const result = run(directory, { WUKONG_RELEASE_REPOSITORY: 'wukong-code/wukong_web' });
   assert.notEqual(result.status, 0);
 });
 

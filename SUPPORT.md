@@ -15,7 +15,7 @@ Visit [docs.wukong.today](https://docs.wukong.today) for:
 
 - **Website:** [wukong.today](https://wukong.today)
 - **Email:** [support@wukong.today](mailto:support@wukong.today)
-- **Issues:** [github.com/mutnpc/wukong-cli/issues](https://github.com/mutnpc/wukong-cli/issues)
+- **Issues:** [github.com/wukong-code/wukong-code/issues](https://github.com/wukong-code/wukong-code/issues)
 
 ## Security issues
 

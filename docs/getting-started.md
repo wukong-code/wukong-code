@@ -45,7 +45,7 @@ verifies its SHA-256 file.
 ### Windows
 
 Download the matching Windows x64 or ARM64 ZIP from the
-[release page](https://github.com/mutnpc/wukong-code/releases/tag/v0.1.1),
+[release page](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.1),
 along with its adjacent `.sha256` file. In PowerShell, verify and extract it:
 
 ```powershell

@@ -14,7 +14,7 @@ Wukong Code is a terminal AI coding agent built around one workflow:
 
 [Install v0.1.1](#install){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
 [Download Wukong Code](https://wukong.today/download){: .btn .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[View the release](https://github.com/mutnpc/wukong-code/releases/tag/v0.1.1){: .btn .fs-5 .mb-4 .mb-md-0 }
+[View the release](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.1){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ---
 
@@ -53,7 +53,7 @@ wukong --version
 ```
 
 Windows users can download the matching x64 or ARM64 ZIP from the
-[release page](https://github.com/mutnpc/wukong-code/releases/tag/v0.1.1).
+[release page](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.1).
 Download the adjacent `.sha256` file too, then follow the exact verification,
 extraction, and `PATH` steps in [Getting Started](/getting-started/#windows).
 

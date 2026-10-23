@@ -58,17 +58,17 @@ const provenance = JSON.parse(
 );
 const expectedVersion = releaseTag.slice(1);
 const expectedWorkflowRun =
-  `https://github.com/mutnpc/wukong_cli/actions/runs/${sourceRun}`;
+  `https://github.com/wukong-code/wukong_cli/actions/runs/${sourceRun}`;
 if (
   provenance.schemaVersion !== 1
   || provenance.releaseTag !== releaseTag
   || provenance.version !== expectedVersion
-  || provenance.sourceRepository !== 'mutnpc/wukong_cli'
+  || provenance.sourceRepository !== 'wukong-code/wukong_cli'
   || provenance.sourceSha !== sourceSha
   || provenance.workflowRun !== expectedWorkflowRun
-  || provenance.publicTruth?.distributionRepository !== 'mutnpc/wukong-code'
+  || provenance.publicTruth?.distributionRepository !== 'wukong-code/wukong-code'
   || provenance.publicTruth?.distributionSha !== distributionSha
-  || provenance.publicTruth?.websiteRepository !== 'mutnpc/wukong_web'
+  || provenance.publicTruth?.websiteRepository !== 'wukong-code/wukong_web'
   || provenance.publicTruth?.websiteSha !== websiteSha
   || !Number.isFinite(Date.parse(provenance.generatedAt))
 ) {
@@ -105,7 +105,7 @@ for (const target of TARGETS) {
     || artifact.build?.schemaVersion !== 1
     || artifact.build?.target !== target
     || artifact.build?.version !== expectedVersion
-    || artifact.build?.sourceRepository !== 'mutnpc/wukong_cli'
+    || artifact.build?.sourceRepository !== 'wukong-code/wukong_cli'
     || artifact.build?.sourceSha !== sourceSha
     || artifact.build?.profile !== 'release'
     || artifact.build?.macosSignedAndNotarized !== false

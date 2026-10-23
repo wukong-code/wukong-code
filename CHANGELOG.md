@@ -60,7 +60,7 @@ completed and do not impose a fixed 14-day waiting gate.
 
 ## [0.1.0-rc.1] - 2026-08-08
 
-> The [pinned prerelease](https://github.com/mutnpc/wukong-code/releases/tag/v0.1.0-rc.1)
+> The [pinned prerelease](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.0-rc.1)
 > is public with all 13 verified assets and provenance. It is immutable;
 > stable `latest` remains `v0.0.22`.
 
@@ -378,7 +378,7 @@ Wukong Code 0.0.11 improved terminal evidence, release announcements, and Loop s
 - Add TUI `/verify`, `/scan`, and `/guard` commands and a verification agent on top of the existing CLI verification suite.
 
 ### Changed
-- Rebrand the product as Wukong Code: npm package `@wukong.today/code`, runtime system prompt, ACP agent identity, and public release repository `mutnpc/wukong-code`.
+- Rebrand the product as Wukong Code: npm package `@wukong.today/code`, runtime system prompt, ACP agent identity, and public release repository `wukong-code/wukong-code`.
 - Build native binaries with Node 26.4.0 and include the session visualizer web assets.
 
 Versions 0.0.3 and 0.0.4 were not published. The internal `v0.0.3` tag only
@@ -396,7 +396,7 @@ reverted a CI runner change; the next public release is 0.0.5.
 - Native binary distribution for macOS, Linux, and Windows.
 
 ### Notes
-- This public release corresponds to the implementation work in the internal `mutnpc/wukong_cli` repository.
+- This public release corresponds to the implementation work in the internal `wukong-code/wukong_cli` repository.
 - No API keys are bundled with the binary; users bring their own model provider keys.
 
 ---
