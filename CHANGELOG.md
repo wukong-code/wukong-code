@@ -411,7 +411,9 @@ reverted a CI runner change; the next public release is 0.0.5.
 - Native binary distribution for macOS, Linux, and Windows.
 
 ### Notes
-- This public release corresponds to the implementation work in the internal `wukong-code/wukong_cli` repository.
+- At the time of this `0.0.1` release, the implementation work lived in the
+  internal `wukong-code/wukong_cli` repository. Starting with `v0.1.2`, the CLI
+  source repository is public under the MIT license.
 - No API keys are bundled with the binary; users bring their own model provider keys.
 
 ---

@@ -13,9 +13,9 @@ wukong            # then type: /loop add input validation to the signup form
 ```
 
 This repository distributes the published Wukong Code binaries, release
-provenance, and public documentation. The complete source lives at
+provenance, and public documentation. The complete local CLI source lives at
 [wukong-code/wukong_cli](https://github.com/wukong-code/wukong_cli) under the
-MIT license.
+MIT license. The website and operations backend remain private.
 
 ## Why Wukong
 
@@ -182,10 +182,15 @@ confirmation. Model requests use the provider configured by the user.
 - Source: [github.com/wukong-code/wukong_cli](https://github.com/wukong-code/wukong_cli)
 - Email: [support@wukong.today](mailto:support@wukong.today)
 
-## License
+## License scope
 
-The CLI source repository
-[wukong-code/wukong_cli](https://github.com/wukong-code/wukong_cli) is open
-source under the MIT license as of `v0.1.2`. This distribution and
-documentation repository is governed by [LICENSE.md](./LICENSE.md); the
-website and operations backend remain private.
+- **CLI source, local components, and artifacts built from that source:** MIT;
+  see the [`wukong_cli` LICENSE](https://github.com/wukong-code/wukong_cli/blob/main/LICENSE).
+- **This distribution repository's scripts, workflows, release metadata, checksums,
+  and documentation:** governed by [LICENSE.md](./LICENSE.md), unless a file
+  includes its own license.
+- **Website, account services, operations backend, hosted infrastructure, and
+  Wukong trademarks:** private and not included in the CLI MIT license.
+
+The MIT status of the local CLI does not make the website or hosted services
+open source.
