@@ -13,6 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Post-release real-repository, first-user, and cohort learning remains open. It
 does not impose a fixed 14-day wait on the stable binary.
 
+## [0.1.2] - 2026-10-24
+
+### Changed
+- Open-source edition: the CLI source repository
+  (`wukong-code/wukong_cli`) is public under the MIT license, and npm
+  releases of `@wukong.today/code` are published from the public repository
+  with provenance.
+- Point every embedded feedback, changelog, installer, and announcement link
+  at the `wukong-code` organization and `wukong.today` after the repository
+  migration; announcement links outside the approved hosts are rejected.
+
+Wukong Code 0.1.2 keeps the command surface, Loop/Gate semantics, and free
+local-first BYOK boundary of 0.1.1 unchanged. It adds no paid plan, hosted
+workflow, or account requirement.
+
 ## [0.1.1] - 2026-09-03
 
 ### Changed

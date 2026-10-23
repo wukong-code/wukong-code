@@ -1,21 +1,21 @@
 ---
 layout: default
 title: Getting Started
-description: Install Wukong Code v0.1.1, configure a BYOK provider, preview a Loop, and run an evidence-backed Gate on macOS, Linux, or Windows.
+description: Install Wukong Code v0.1.2, configure a BYOK provider, preview a Loop, and run an evidence-backed Gate on macOS, Linux, or Windows.
 nav_order: 2
 permalink: /getting-started/
 ---
 
 # Getting Started
 
-Wukong Code v0.1.1 is a terminal AI coding agent centered on one workflow:
+Wukong Code v0.1.2 is a terminal AI coding agent centered on one workflow:
 **Goal → Write → Check → Review → Fix**.
 
 {: .highlight }
-Unpinned install facts on this page refer to stable `v0.1.1`. The immutable
+Unpinned install facts on this page refer to stable `v0.1.2`. The immutable
 `v0.1.0-rc.1` prerelease remains the candidate evidence snapshot.
 
-Version 0.1.1 keeps the same local BYOK Loop and strengthens session recovery,
+Version 0.1.2 keeps the same local BYOK Loop and strengthens session recovery,
 provider configuration, explicit updates, plugin installation, workspace check
 discovery, and local Web interaction. Full multi-layer coverage schemas and
 direct-shell content/PATH attestation are deferred.
@@ -45,7 +45,7 @@ verifies its SHA-256 file.
 ### Windows
 
 Download the matching Windows x64 or ARM64 ZIP from the
-[release page](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.1),
+[release page](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.2),
 along with its adjacent `.sha256` file. In PowerShell, verify and extract it:
 
 ```powershell

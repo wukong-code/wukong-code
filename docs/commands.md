@@ -1,19 +1,19 @@
 ---
 layout: default
 title: Commands
-description: Wukong Code v0.1.1 CLI and TUI reference for Loop, Preflight, Resume, providers, permissions, checks, and deterministic Gate outcomes.
+description: Wukong Code v0.1.2 CLI and TUI reference for Loop, Preflight, Resume, providers, permissions, checks, and deterministic Gate outcomes.
 nav_order: 3
 permalink: /commands/
 ---
 
 # Command Reference
 
-This reference describes the public v0.1.1 binary.
+This reference describes the public v0.1.2 binary.
 
 The immutable `0.1.0-rc.1` prerelease remains a historical candidate evidence
 snapshot for the earlier `v0.1.0` command surface.
 
-The 0.1.1 release keeps the command surface narrow and strengthens recovery,
+The 0.1.2 release keeps the command surface narrow and strengthens recovery,
 provider configuration, explicit updates, plugin installation, workspace check
 discovery, and local Web interaction. Full internal coverage-schema replacement
 and direct-shell content/PATH attestation are not user-facing release blockers.

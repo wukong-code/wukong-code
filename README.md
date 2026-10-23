@@ -2,12 +2,9 @@
 
 > **Your AI coding agent says it's done. Wukong makes it prove it.**
 
-Give Wukong a goal. It writes the change, runs your project's own tests, type
-checks, lint, and build, reviews the result from a fresh context, and fixes
-what fails. Within the limits you approve, it loops until the checks pass, or
-stops and tells you exactly what is blocking.
+**Free · Bring your own API key · macOS / Linux / Windows**
 
-<!-- TODO: 30–60s unedited terminal recording of one real /loop (fail → fix → PASS) -->
+Current release: **[v0.1.2](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.2)** — the open-source edition.
 
 ```bash
 curl -fsSL https://wukong.today/install.sh | sh
@@ -15,8 +12,10 @@ wukong provider   # add your own model API key
 wukong            # then type: /loop add input validation to the signup form
 ```
 
-Free · no account · bring your own API key · macOS, Linux, Windows ·
-current release **[v0.1.1](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.1)**
+This repository distributes the published Wukong Code binaries, release
+provenance, and public documentation. The complete source lives at
+[wukong-code/wukong_cli](https://github.com/wukong-code/wukong_cli) under the
+MIT license.
 
 ## Why Wukong
 
@@ -34,20 +33,20 @@ current release **[v0.1.1](https://github.com/wukong-code/wukong-code/releases/t
 - **Your key, your provider.** Your code and check results are not uploaded to
   Wukong. Model requests go only to the provider you configure.
 
-## What's new in v0.1.1
+## What's new in v0.1.2
 
-Version `0.1.1` is a reliability and trust-boundary patch for the Trusted Local
-Loop while retaining the command surface and local BYOK product boundary of
-`0.1.0`:
+Version `0.1.2` is the open-source edition. It keeps the command surface,
+Loop/Gate semantics, and free local BYOK boundary of `0.1.1` unchanged, and
+makes the release itself open:
 
-- Loop revisions retain the existing Finish Line and runtime limits;
-- resumed usage is scoped to the new run, provider imports are atomic, and
-  cross-workspace session imports fail safely;
-- updates require explicit `wukong upgrade`; invalid configuration fails closed;
-- plugin downloads require HTTPS, bounded archives, optional SHA-256
-  verification, disabled-first installation, and atomic rollback;
-- project checks come only from real root or workspace-member declarations with
-  explainable provenance.
+- the CLI source repository
+  ([wukong-code/wukong_cli](https://github.com/wukong-code/wukong_cli)) is
+  public under the MIT license;
+- npm releases of `@wukong.today/code` are published from the public
+  repository with provenance;
+- every embedded feedback, changelog, installer, and announcement link now
+  points at the `wukong-code` organization and `wukong.today` after the
+  repository migration.
 
 The immutable
 [`v0.1.0-rc.1`](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.0-rc.1)
@@ -60,21 +59,22 @@ prerelease remains available as the candidate evidence snapshot. Check
 
 ```bash
 curl -fsSL https://wukong.today/install.sh | sh
-```
-
-### Windows
-
-Download the matching Windows ZIP from the
-[v0.1.1 release](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.1),
-extract `wukong.exe`, and add it to your `PATH`.
-
-Verify the installation:
-
-```bash
 wukong --version
 ```
 
-Upgrade an existing native installation:
+The installer downloads the release archive from the
+[v0.1.2 release](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.2),
+verifies its SHA-256 before installing, and requires no account.
+
+### Windows
+
+Download the matching x64 or ARM64 ZIP from the
+[v0.1.2 release](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.2),
+download the adjacent `.sha256` file, then follow the exact verification,
+extraction, and `PATH` steps in
+[Getting Started](https://docs.wukong.today/getting-started/#windows).
+
+### Upgrade
 
 ```bash
 wukong upgrade
@@ -95,22 +95,19 @@ Start a Loop inside the TUI:
 /loop add input validation to the signup form
 ```
 
-For headless use, review the dry-run and add its exact **Headless start flags**
-to the same command. Missing decisions fail closed:
+Before the first edit, one Preflight summary shows the Goal, Done when,
+Must-not rules, exact checks, Writer/Reviewer, sanitized provider origin,
+pre-existing Git changes, permission mode, and the iteration, provider-call,
+and token ceilings. Local read, provider transmission, permission, and
+project-check execution remain separate approvals. Cancelling creates no run
+and makes no provider call.
+
+For headless use, review the dry-run and add its exact **Headless start
+flags** to the same command. Missing decisions fail closed:
 
 ```bash
 wukong loop "add input validation to the signup form" --dry-run
 ```
-
-Before a Loop starts, one Preflight summary shows the
-Goal, Done when, Must not rules, exact checks, review criteria, Writer/Reviewer,
-sanitized provider origin, pre-existing Git changes, permission mode, outbound
-scope and payload limits, approval order, terminal handling, and iteration
-limit, provider-call ceiling, and optional token budget. Local read, provider
-transmission, permission, and project-check execution remain separate security
-approvals. Cancelling creates no run or provider call. A versioned no-check
-decision can cover eligible documentation/configuration work; source changes
-without required checks fail closed as `NEEDS_WORK/checks_missing`.
 
 Resume local work from another coding agent:
 
@@ -129,28 +126,24 @@ workspace again before continuing.
 
 Each Loop keeps one user-owned target:
 
-1. Write the change.
-2. Run the repository's available checks.
-3. Review from a fresh read-only context.
-4. Fix blocking findings against the same goal.
-5. Pass, stop with a clear blocker, or report an execution error.
+```
+Goal → Write → Check → Review → Fix → (repeat) → Gate
+```
 
-### Result handling
+| Outcome | Meaning | Exit code |
+|---|---|---|
+| `PASS` | Fresh checks and the independent reviewer both passed | `0` |
+| `NEEDS_WORK` | A named blocker remains; read the Next action and continue | `1` |
+| `ERROR` | Provider, check, or local state cannot produce a trustworthy result | `2` |
+| `PAUSED` | TUI Ctrl-C or `/loop pause`; resumable, no Gate verdict | — |
+| `STOPPED_BY_USER` | `/loop stop` or a headless interruption; no Gate verdict | — |
 
-A terminal summary separates decisive evidence, pre-existing changes,
-Wukong-touched/added/deleted files, unknown attribution, checks,
-calls/tokens/retries/remaining budget, the primary blocker, and the safe Next
-action. A source change without required executable checks cannot return
-`PASS`; an eligible versioned no-check decision remains explicit and auditable.
-After `PASS`, inspect the diff and any non-blocking findings before delivery.
-TUI Ctrl-C or `/loop pause` is resumable `PAUSED`; `/loop stop` and a headless
-interruption are `STOPPED_BY_USER`, not Gate verdicts. If a result reports
-`provider_outcome_unknown`, reconcile its request ID/idempotency key with the
-provider logs or billing before any retry and never resume blindly.
-
-Only a final durable `loop.result` maps `PASS=0`, `NEEDS_WORK=1`, and `ERROR=2`
-to a Gate verdict. Headless SIGINT exits `130` as a lifecycle interruption. A
-successful dry-run or another command exiting `0` is not `PASS`.
+A source change without the required executable checks cannot return `PASS`.
+Only a final durable `loop.result` is a Gate verdict: a successful dry-run,
+a plain prompt, or another command exiting `0` is not `PASS`. If a result
+reports `provider_outcome_unknown`, reconcile its request ID with the provider
+logs or billing before any retry. Wukong never commits, pushes, or publishes
+merely because a Loop returns `PASS`.
 
 ## Primary commands
 
@@ -170,42 +163,29 @@ successful dry-run or another command exiting `0` is not `PASS`.
 
 Run `wukong --help` for the complete command and option list.
 
-`wukong logout` and TUI `/logout` first try to revoke
-the stored refresh token at the configured OAuth host, then continue local
-account cleanup. Only a confirmed response is reported as remotely revoked.
-Network, rate-limit, or server failures leave remote state `unknown`, while
-local cleanup still completes when possible. Repeating logout is safe and does
-not delete the user's BYOK provider configuration.
-
 ## Local data and privacy
 
-Loop contracts, run state, evidence, findings, and imported session context stay
-on the local machine. `/feedback` sends only the text fields shown for
+Loop contracts, run state, evidence, findings, and imported session context
+stay on the local machine. `/feedback` sends only the text fields shown for
 confirmation. Model requests use the provider configured by the user.
 
 ## Documentation
 
-Full documentation: [docs.wukong.today](https://docs.wukong.today)
-
-- [Getting started](./docs/getting-started.md)
-- [Command reference](./docs/commands.md)
-- [Configuration](./docs/configuration.md)
-- [Updates and announcements](./docs/updates-and-announcements.md)
-- [Changelog](./CHANGELOG.md)
+- Getting started, commands, configuration: [docs.wukong.today](https://docs.wukong.today)
+- Source and development: [wukong-code/wukong_cli](https://github.com/wukong-code/wukong_cli)
+- Changelog: [CHANGELOG.md](./CHANGELOG.md)
 
 ## Support
 
 - Website: [wukong.today](https://wukong.today)
 - Issues: [github.com/wukong-code/wukong-code/issues](https://github.com/wukong-code/wukong-code/issues)
+- Source: [github.com/wukong-code/wukong_cli](https://github.com/wukong-code/wukong_cli)
 - Email: [support@wukong.today](mailto:support@wukong.today)
 
 ## License
 
-This is proprietary software. See [LICENSE.md](./LICENSE.md).
-
-The roadmap calls for an independently usable open-source local CLI, with the
-website and operations backend remaining private. Source publication and the
-license transition have not happened; the current license still applies.
-The planned service path starts with scoped, one-off repository onboarding and
-acceptance support, followed by monthly support after repeat purchases. This
-does not announce a paid software plan or change the current Free + BYOK release.
+The CLI source repository
+[wukong-code/wukong_cli](https://github.com/wukong-code/wukong_cli) is open
+source under the MIT license as of `v0.1.2`. This distribution and
+documentation repository is governed by [LICENSE.md](./LICENSE.md); the
+website and operations backend remain private.
