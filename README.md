@@ -41,17 +41,11 @@ wukong loop "add input validation to the signup form" --dry-run
 Review the printed **Headless start flags**, then run the command again with those
 flags. Missing decisions fail closed instead of starting silently.
 
-## Useful commands
+## What's new in v0.1.2
 
-```text
-wukong provider       Configure a model provider
-wukong loop <goal>    Run write → check → review → fix
-wukong doctor         Validate local configuration
-wukong upgrade        Upgrade a native installation
-```
-
-Run `wukong --help` for the complete command list. See the [documentation](https://docs.wukong.today)
-for command details and platform-specific installation steps.
+The local CLI source is public under the MIT License, with the website and
+operations backend remaining private. See the [v0.1.2 release notes](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.2)
+for the complete release record.
 
 ## Privacy
 
