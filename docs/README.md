@@ -6,10 +6,11 @@ default. The immutable
 prerelease remains the candidate evidence snapshot.
 
 The 0.1.2 release is the open-source edition: the CLI source repository is
-public under the MIT license, npm releases carry public provenance, and all
-embedded links point at the wukong-code organization after the repository
-migration. The command surface, Loop/Gate semantics, and free local-first BYOK
-boundary are unchanged from 0.1.1.
+public under the MIT license, installation is via `install.sh` and the GitHub
+release binaries (npm distribution is not published), and all embedded links
+point at the wukong-code organization after the repository migration. The
+command surface, Loop/Gate semantics, and free local-first BYOK boundary are
+unchanged from 0.1.1.
 
 Wukong Code has one primary workflow: give `/loop` a goal and let Wukong write,
 check, review, and fix until the change passes or stops with a clear reason.
