@@ -17,9 +17,9 @@ does not impose a fixed 14-day wait on the stable binary.
 
 ### Changed
 - Open-source edition: the CLI source repository
-  (`wukong-code/wukong_cli`) is public under the MIT license, and npm
-  releases of `@wukong.today/code` are published from the public repository
-  with provenance.
+  (`wukong-code/wukong_cli`) is public under the MIT license. npm
+  distribution is not published at this time; installation is via
+  `install.sh` and the GitHub release binaries.
 - Point every embedded feedback, changelog, installer, and announcement link
   at the `wukong-code` organization and `wukong.today` after the repository
   migration; announcement links outside the approved hosts are rejected.
