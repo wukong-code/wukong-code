@@ -15,6 +15,12 @@ does not accept code changes to the CLI or generated binaries.
 - **Security vulnerabilities:** follow [SECURITY.md](./SECURITY.md); do not open
   a public issue with sensitive details
 
+Documentation in this repository is public, including files omitted from navigation.
+Keep business experiments, candidate pricing, production usage statistics, and
+private operations in the private website repository. Before publishing documentation sources,
+review and update `docs/public-documents.json`, then run
+`node scripts/check-public-docs.mjs`; the Pages workflow runs the same check.
+
 Please be respectful and constructive in all interactions.
 
 ## Questions?

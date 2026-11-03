@@ -10,9 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Post-release real-repository, first-user, and cohort learning remains open. It
-does not impose a fixed 14-day wait on the stable binary.
-
 ## [0.1.2] - 2026-10-24
 
 ### Changed
@@ -69,10 +66,6 @@ hosted inference, managed model credit, or new top-level command.
   CLI is verified by checksum and release provenance rather than an app-package
   signature.
 
-Real repository/source flows, first-user comprehension, and the opt-in cohort
-remain post-release product-learning evidence. They are not represented as
-completed and do not impose a fixed 14-day waiting gate.
-
 ## [0.1.0-rc.1] - 2026-08-08
 
 > The [pinned prerelease](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.0-rc.1)
@@ -103,9 +96,7 @@ The 0.1.0 development source now implements provider-call/token limits,
 versioned no-check policy, file attribution, terminal usage/next actions,
 compatibility recovery, and minimum Gate completeness/freshness, with local
 automated coverage passing. Six-platform candidate CI, public-asset verification,
-pinned fresh install, `0.0.22` upgrade, and state recovery have passed. Real
-repository/source flows and first-user/cohort evidence remain incomplete and
-continue after stable release.
+pinned fresh install, `0.0.22` upgrade, and state recovery have passed.
 Full multi-layer coverage-schema replacement and direct-shell content/PATH
 attestation are deferred.
 
@@ -385,7 +376,6 @@ Wukong Code 0.0.11 improved terminal evidence, release announcements, and Loop s
 ### Fixed
 - Windows native build failures caused by PowerShell interpreting `@wukong` in pnpm filter commands; CI steps now explicitly use `shell: bash`.
 - macOS x64 build by cross-compiling on `macos-latest` Apple Silicon runners with a target-architecture Node.js SEA base binary.
-- Public release publish job failing due to missing `WUKONG_PUBLIC_RELEASE_TOKEN` repository secret.
 
 ## [0.0.2] - 2026-07-03
 
@@ -396,8 +386,7 @@ Wukong Code 0.0.11 improved terminal evidence, release announcements, and Loop s
 - Rebrand the product as Wukong Code: npm package `@wukong.today/code`, runtime system prompt, ACP agent identity, and public release repository `wukong-code/wukong-code`.
 - Build native binaries with Node 26.4.0 and include the session visualizer web assets.
 
-Versions 0.0.3 and 0.0.4 were not published. The internal `v0.0.3` tag only
-reverted a CI runner change; the next public release is 0.0.5.
+Versions 0.0.3 and 0.0.4 were not published; the next public release is 0.0.5.
 
 ## [0.0.1] - 2026-07-02
 

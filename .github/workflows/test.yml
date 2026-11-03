@@ -17,6 +17,9 @@ jobs:
       - name: Validate installer shell syntax
         run: sh -n install.sh
 
+      - name: Validate reviewed public documentation
+        run: node scripts/check-public-docs.mjs
+
       - name: Validate current release truth
         run: node scripts/validate-release-truth.mjs
 
