@@ -13,7 +13,17 @@ wukong --version
 
 ## Start
 
-Configure your model provider, then open the TUI:
+Initialize checks and provider connectivity in your project, then run the gate:
+
+```bash
+cd your-project
+wukong init
+wukong check
+wukong gate
+wukong summary
+```
+
+Or configure your model provider directly and open the TUI:
 
 ```bash
 wukong provider
@@ -27,24 +37,33 @@ Inside the TUI:
 ```
 
 Wukong writes the change, runs your repository's checks, reviews the result, and
-fixes blocking findings. A Loop ends with a clear `PASS`, `NEEDS_WORK`, or
+fixes blocking findings. A Gate or Loop ends with a clear `PASS`, `NEEDS_WORK`, or
 `ERROR` result.
 
 ## Headless mode
 
-Preview the exact checks, limits, and approvals first:
+Preview a single-confirm headless Loop run-plan first:
 
 ```bash
-wukong loop "add input validation to the signup form" --dry-run
+wukong loop "add input validation to the signup form" --dry-run --plan-out .wukong/run-plan.json
 ```
 
-Review the printed **Headless start flags**, then run the command again with those
-flags. Missing decisions fail closed instead of starting silently.
+Review the saved plan, then approve and start with one command:
 
-## What's new in v0.1.2
+```bash
+wukong loop --plan .wukong/run-plan.json --approve-plan <planDigest>
+```
 
-The local CLI source is public under the MIT License, with the website and
-operations backend remaining private. See the [v0.1.2 release notes](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.2)
+Missing decisions fail closed instead of starting silently.
+
+## What's new in v0.2.0
+
+`0.2.0` launches the Standalone Gate & Proof Foundation: `wukong init`,
+`wukong provider test`, deterministic offline `wukong check`, standalone
+fresh-context `wukong gate`, sanitized PR proof cards via `wukong summary`,
+tiered CLI/TUI command discovery (`wukong help --all`), and single-confirm
+headless run-plans. See the
+[v0.2.0 release notes](https://github.com/wukong-code/wukong-code/releases/tag/v0.2.0)
 for the complete release record.
 
 ## Privacy

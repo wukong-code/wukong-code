@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Configuration
-description: Configure Wukong Code v0.1.2 providers, models, permissions, local state, Resume sources, upgrades, and privacy boundaries.
+description: Configure Wukong Code v0.2.0 providers, .wukong project checks and review policy, permissions, local state, Resume sources, upgrades, and privacy boundaries.
 nav_order: 4
 permalink: /configuration/
 ---
@@ -19,10 +19,12 @@ under `$WUKONG_CODE_HOME` when that environment variable is set.
   roles/
 ```
 
-Project review policy and project-scoped roles live in the repository:
+Project checks, review policy, and project-scoped roles live in the repository
+(initialized via `wukong init`):
 
 ```text
 .wukong/
+  checks.json
   review-policy.md
   roles/
 ```

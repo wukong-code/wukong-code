@@ -1,24 +1,25 @@
 ---
 layout: default
 title: Getting Started
-description: Install Wukong Code v0.1.2, configure a BYOK provider, preview a Loop, and run an evidence-backed Gate on macOS, Linux, or Windows.
+description: Install Wukong Code v0.2.0, initialize .wukong checks, configure a BYOK provider, run standalone gate & summary, or run a Loop on macOS, Linux, or Windows.
 nav_order: 2
 permalink: /getting-started/
 ---
 
 # Getting Started
 
-Wukong Code v0.1.2 is a terminal AI coding agent centered on one workflow:
-**Goal → Write → Check → Review → Fix**.
+Wukong Code v0.2.0 is a terminal AI coding agent and standalone delivery gate
+centered on **Init → Check → Fresh Review → Proof Card (`PASS` / `NEEDS_WORK` / `ERROR`)**.
 
 {: .highlight }
-Unpinned install facts on this page refer to stable `v0.1.2`. The immutable
-`v0.1.0-rc.1` prerelease remains the candidate evidence snapshot.
+Unpinned install facts on this page refer to stable `v0.2.0`. The immutable
+`v0.1.0-rc.1` prerelease remains the historical candidate evidence snapshot.
 
-Version 0.1.2 keeps the same local BYOK Loop and strengthens session recovery,
-provider configuration, explicit updates, plugin installation, workspace check
-discovery, and local Web interaction. Full multi-layer coverage schemas and
-direct-shell content/PATH attestation are deferred.
+Version 0.2.0 extracts Wukong's deterministic check runner, independent
+fresh-context reviewer, and sanitized PR proof cards into standalone commands
+(`wukong init`, `wukong provider test`, `wukong check`, `wukong gate`,
+`wukong summary`), streamlines CLI/TUI command tiers, and adds single-confirm
+headless Loop run-plans.
 
 ## Requirements
 
@@ -45,7 +46,7 @@ verifies its SHA-256 file.
 ### Windows
 
 Download the matching Windows x64 or ARM64 ZIP from the
-[release page](https://github.com/wukong-code/wukong-code/releases/tag/v0.1.2),
+[release page](https://github.com/wukong-code/wukong-code/releases/tag/v0.2.0),
 along with its adjacent `.sha256` file. In PowerShell, verify and extract it:
 
 ```powershell
@@ -84,26 +85,45 @@ Native macOS and Linux installations upgrade in place after checking the
 release SHA-256. Windows native installations open the download path when an
 automatic replacement is unavailable.
 
-## Configure a model
+## Initialize your repository & test a model
 
-Start the TUI and open the guided provider manager:
+Run the initialization wizard in your project root to auto-detect toolchains
+(Node/pnpm/npm/yarn, Python, Rust, Go, or monorepo workspaces), scaffold
+`.wukong/checks.json` and `.wukong/review-policy.md`, and verify your provider:
 
 ```bash
-wukong
+cd your-project
+wukong init
+wukong provider test
 ```
 
-```text
-/provider
-```
-
-For non-interactive provider commands:
+You can also start the TUI or manage providers non-interactively:
 
 ```bash
 wukong provider --help
 wukong provider list
+wukong provider test <providerId>
 ```
 
-## Run your first Loop
+## Run quick checks, standalone gate, and proof summary
+
+After any AI coding agent (or manual edit) modifies your workspace:
+
+```bash
+# Offline deterministic checks + risk scan (explicitly prints reviewer: not_run)
+wukong check
+
+# Full checks + risk scan + isolated fresh-context review (PASS / NEEDS_WORK / ERROR)
+wukong gate
+
+# Render a sanitized PR-ready Markdown Delivery Proof Card
+wukong summary
+```
+
+By default, `wukong summary` excludes source code, diffs, transcripts, secrets,
+and home paths while clearly disclosing any unverified areas.
+
+## Or run a Loop
 
 Inside the TUI:
 
@@ -111,17 +131,16 @@ Inside the TUI:
 /loop add input validation to the signup form
 ```
 
-Or run a headless Loop:
+Or preview and approve a headless Loop with a single run-plan file:
 
 ```bash
-wukong loop "add input validation to the signup form" --dry-run
-# Review “Headless start flags”, then rerun the same command with those flags.
+wukong loop "add input validation to the signup form" --dry-run --plan-out .wukong/run-plan.json
+wukong loop --plan .wukong/run-plan.json --approve-plan <planDigest>
 ```
 
-The dry-run lists the exact check decision, Gate approval, workspace trust (if
-checks execute), short-lived broker challenge, and run-scoped provider consent
-required by the current workspace. A bare headless command fails closed when
-those decisions are missing; it never silently accepts them for you.
+The dry-run saves a secret-free proposal binding workspace identity, selected
+checks, Gate approval, warning acknowledgements, broker challenge, and run-scoped
+provider consent for 10 minutes. Legacy individual approval flags remain supported.
 
 ### A normal prompt is not a Loop verdict
 

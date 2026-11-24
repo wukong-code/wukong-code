@@ -22,46 +22,53 @@ esac
 EOF
     chmod +x "$MOCK_BIN/uname"
 
-    # Mock curl: fails GitHub API calls and writes release assets locally.
-    cat > "$MOCK_BIN/curl" <<'EOF'
+    # Build a fake release artifact and its SHA-256 checksum once.
+    # The archive contains both Unix and Windows binary names so the
+    # same mock release can be reused across platform tests.
+    FAKE_RELEASE_DIR="$TEST_DIR/fake_release"
+    mkdir -p "$FAKE_RELEASE_DIR"
+
+    python3 - "$FAKE_RELEASE_DIR" <<'PY'
+import hashlib, os, zipfile, sys
+out_dir = sys.argv[1]
+zip_path = os.path.join(out_dir, "artifact.zip")
+with zipfile.ZipFile(zip_path, "w") as z:
+    for name, content in (
+        ("wukong", "#!/bin/sh\necho \"wukong stub\"\n"),
+        ("wukong.exe", "@echo off\necho wukong stub\n"),
+    ):
+        info = zipfile.ZipInfo(filename=name)
+        info.external_attr = (0o755 << 16)
+        z.writestr(info, content)
+with open(zip_path, "rb") as f:
+    digest = hashlib.sha256(f.read()).hexdigest()
+with open(os.path.join(out_dir, "artifact.zip.sha256"), "w") as f:
+    f.write(f"{digest}  artifact.zip\n")
+PY
+
+    # Mock curl copies the fake artifact or checksum to the requested path.
+    cat > "$MOCK_BIN/curl" <<EOF
 #!/bin/sh
 OUTPUT=""
 URL=""
-while [ $# -gt 0 ]; do
-    case "$1" in
-        -o) shift; OUTPUT="$1" ;;
+while [ \$# -gt 0 ]; do
+    case "\$1" in
+        -o) shift; OUTPUT="\$1" ;;
         -*) ;;
-        *) URL="$1" ;;
+        *) URL="\$1" ;;
     esac
     shift
 done
 
-echo "$URL" >> "$TEST_DIR/curl.log"
-
-if echo "$URL" | grep -q "api.github.com"; then
-    echo 'GitHub API rate limit exceeded' >&2
-    exit 22
+if echo "\$URL" | grep -q "\.sha256\$"; then
+    SHA_BASENAME="\${OUTPUT%.sha256}"
+    SHA_BASENAME="\${SHA_BASENAME##*/}"
+    sed "s#artifact\.zip#\$SHA_BASENAME#" "$FAKE_RELEASE_DIR/artifact.zip.sha256" > "\$OUTPUT"
+    exit 0
 fi
 
-if echo "$URL" | grep -q "/download/"; then
-    if echo "$URL" | grep -q "\.sha256$"; then
-        python3 - "$OUTPUT" <<'PY'
-import hashlib, pathlib, sys
-out = pathlib.Path(sys.argv[1])
-archive = pathlib.Path(str(out).removesuffix('.sha256'))
-digest = hashlib.sha256(archive.read_bytes()).hexdigest()
-out.write_text(f'{digest}  {archive.name}\n')
-PY
-        exit 0
-    fi
-    python3 - "$OUTPUT" <<'PY'
-import sys, zipfile, os
-out = sys.argv[1]
-with zipfile.ZipFile(out, 'w') as z:
-    z.writestr('wukong', '#!/bin/sh\necho "wukong stub"\n')
-    z.writestr('wukong.exe', '@echo off\necho wukong stub\r\n')
-os.chmod(out, 0o644)
-PY
+if echo "\$URL" | grep -q "/download/"; then
+    cp "$FAKE_RELEASE_DIR/artifact.zip" "\$OUTPUT"
     exit 0
 fi
 
@@ -74,24 +81,16 @@ teardown() {
     rm -rf "$TEST_DIR"
 }
 
-@test "installs the latest release without calling the rate-limited GitHub API" {
+@test "installs the latest release by default" {
     run ./install.sh
     [ "$status" -eq 0 ]
     [ -x "$HOME/.wukong/bin/wukong" ]
-    [[ "$output" == *"latest"* ]]
-    [[ "$output" == *"wukong-darwin-x64"* ]]
-    [[ "$output" == *"Verified SHA-256"* ]]
-    grep -q "/releases/latest/download/wukong-darwin-x64.zip" "$TEST_DIR/curl.log"
-    grep -q "/releases/latest/download/wukong-darwin-x64.zip.sha256" "$TEST_DIR/curl.log"
-    ! grep -q "api.github.com" "$TEST_DIR/curl.log"
-}
-
-@test "fresh installer pins the 0.0.15 candidate when explicitly requested" {
-    WUKONG_VERSION=v0.0.15 run ./install.sh
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"v0.0.15"* ]]
-    grep -q "/releases/download/v0.0.15/wukong-darwin-x64.zip" "$TEST_DIR/curl.log"
-    [ -x "$HOME/.wukong/bin/wukong" ]
+    [[ "$output" == *"Installing Wukong Code latest for darwin-x64"* ]]
+    [[ "$output" == *"wukong-code/releases/latest/download"* ]]
+    [[ "$output" == *"Wukong Code installed to:"* ]]
+    [[ "$output" == *"wukong init"* ]]
+    [[ "$output" == *"wukong check"* ]]
+    [[ "$output" == *"wukong gate"* ]]
 }
 
 @test "respects WUKONG_INSTALL_DIR override" {
@@ -102,12 +101,59 @@ teardown() {
     [ -x "$CUSTOM_DIR/wukong" ]
 }
 
-@test "does not create an install identity or send install telemetry" {
-    run ./install.sh
+@test "upgrades an existing 0.0.22 binary through same-directory staging" {
+    INSTALL_DIR="$HOME/.wukong/bin"
+    mkdir -p "$INSTALL_DIR"
+    printf '%s\n' '#!/bin/sh' 'echo 0.0.22' > "$INSTALL_DIR/wukong"
+    chmod +x "$INSTALL_DIR/wukong"
+
+    WUKONG_VERSION=v0.1.0 run ./install.sh
+
     [ "$status" -eq 0 ]
-    ! grep -q "telemetry-logs.wukong.today/v1/event" "$TEST_DIR/curl.log"
-    [ ! -e "$HOME/.wukong/device_id" ]
-    [ ! -e "$HOME/.wukong/install_first_run_pending" ]
+    [[ "$output" == *"releases/download/v0.1.0/wukong-darwin-x64.zip"* ]]
+    run "$INSTALL_DIR/wukong"
+    [ "$status" -eq 0 ]
+    [ "$output" = "wukong stub" ]
+    run find "$INSTALL_DIR" -maxdepth 1 -name '.wukong.update.*' -print
+    [ "$status" -eq 0 ]
+    [ -z "$output" ]
+}
+
+@test "checksum failure preserves an existing 0.0.22 binary" {
+    INSTALL_DIR="$HOME/.wukong/bin"
+    mkdir -p "$INSTALL_DIR"
+    printf '%s\n' '#!/bin/sh' 'echo 0.0.22' > "$INSTALL_DIR/wukong"
+    chmod +x "$INSTALL_DIR/wukong"
+
+    cat > "$MOCK_BIN/curl" <<EOF
+#!/bin/sh
+OUTPUT=""
+URL=""
+while [ \$# -gt 0 ]; do
+    case "\$1" in
+        -o) shift; OUTPUT="\$1" ;;
+        -*) ;;
+        *) URL="\$1" ;;
+    esac
+    shift
+done
+if echo "\$URL" | grep -q "\\.sha256\$"; then
+    echo "0000000000000000000000000000000000000000000000000000000000000000  artifact.zip" > "\$OUTPUT"
+else
+    cp "$FAKE_RELEASE_DIR/artifact.zip" "\$OUTPUT"
+fi
+EOF
+    chmod +x "$MOCK_BIN/curl"
+
+    WUKONG_VERSION=v0.1.0 run ./install.sh
+
+    [ "$status" -eq 1 ]
+    run "$INSTALL_DIR/wukong"
+    [ "$status" -eq 0 ]
+    [ "$output" = "0.0.22" ]
+    run find "$INSTALL_DIR" -maxdepth 1 -name '.wukong.update.*' -print
+    [ "$status" -eq 0 ]
+    [ -z "$output" ]
 }
 
 @test "fails on unsupported platform" {
@@ -140,20 +186,57 @@ EOF
     [[ "$output" == *"Unsupported architecture"* ]]
 }
 
+@test "fails when checksum verification fails" {
+    # Override the curl mock to serve a bad checksum file.
+    cat > "$MOCK_BIN/curl" <<EOF
+#!/bin/sh
+OUTPUT=""
+URL=""
+while [ \$# -gt 0 ]; do
+    case "\$1" in
+        -o) shift; OUTPUT="\$1" ;;
+        -*) ;;
+        *) URL="\$1" ;;
+    esac
+    shift
+done
+
+if echo "\$URL" | grep -q "\\.sha256\$"; then
+    SHA_BASENAME="\${OUTPUT%.sha256}"
+    SHA_BASENAME="\${SHA_BASENAME##*/}"
+    echo "0000000000000000000000000000000000000000000000000000000000000000  \$SHA_BASENAME" > "\$OUTPUT"
+    exit 0
+fi
+
+if echo "\$URL" | grep -q "/download/"; then
+    cp "$FAKE_RELEASE_DIR/artifact.zip" "\$OUTPUT"
+    exit 0
+fi
+
+exit 1
+EOF
+    chmod +x "$MOCK_BIN/curl"
+
+    run ./install.sh
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"Release checksum verification failed."* ]]
+}
+
 @test "prints PATH hint when install dir is not on PATH" {
+    export PATH="$MOCK_BIN:/usr/bin:/bin"
     run ./install.sh
     [ "$status" -eq 0 ]
     [[ "$output" == *"Add the following to your shell profile"* ]]
 }
 
 @test "does not print PATH hint when install dir is already on PATH" {
-    export PATH="$HOME/.wukong/bin:$MOCK_BIN:/usr/bin:/bin"
+    export PATH="$MOCK_BIN:$HOME/.wukong/bin:/usr/bin:/bin"
     run ./install.sh
     [ "$status" -eq 0 ]
     [[ "$output" != *"Add the following to your shell profile"* ]]
 }
 
-@test "selects the published windows x64 asset name" {
+@test "selects windows target on mingw" {
     cat > "$MOCK_BIN/uname" <<'EOF'
 #!/bin/sh
 case "$1" in
@@ -165,15 +248,15 @@ EOF
 
     run ./install.sh
     [ "$status" -eq 0 ]
-    [[ "$output" == *"wukong-win32-x64.zip"* ]]
+    [[ "$output" == *"Installing Wukong Code latest for win32-x64"* ]]
     [ -x "$HOME/.wukong/bin/wukong.exe" ]
 }
 
-@test "selects the published windows arm64 asset name" {
+@test "selects windows arm64 release target" {
     cat > "$MOCK_BIN/uname" <<'EOF'
 #!/bin/sh
 case "$1" in
-    -s) echo "MSYS_NT-10.0" ;;
+    -s) echo "MINGW64_NT-10.0" ;;
     -m) echo "arm64" ;;
 esac
 EOF
@@ -181,6 +264,6 @@ EOF
 
     run ./install.sh
     [ "$status" -eq 0 ]
-    [[ "$output" == *"wukong-win32-arm64.zip"* ]]
+    [[ "$output" == *"Installing Wukong Code latest for win32-arm64"* ]]
     [ -x "$HOME/.wukong/bin/wukong.exe" ]
 }

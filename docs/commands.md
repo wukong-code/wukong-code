@@ -1,26 +1,26 @@
 ---
 layout: default
 title: Commands
-description: Wukong Code v0.1.2 CLI and TUI reference for Loop, Preflight, Resume, providers, permissions, checks, and deterministic Gate outcomes.
+description: Wukong Code v0.2.0 CLI and TUI reference for init, check, gate, summary, Loop, run-plans, providers, permissions, and deterministic Gate outcomes.
 nav_order: 3
 permalink: /commands/
 ---
 
 # Command Reference
 
-This reference describes the public v0.1.2 binary.
+This reference describes the public v0.2.0 binary.
 
 The immutable `0.1.0-rc.1` prerelease remains a historical candidate evidence
 snapshot for the earlier `v0.1.0` command surface.
 
-The 0.1.2 release keeps the command surface narrow and strengthens recovery,
-provider configuration, explicit updates, plugin installation, workspace check
-discovery, and local Web interaction. Full internal coverage-schema replacement
-and direct-shell content/PATH attestation are not user-facing release blockers.
+The 0.2.0 release organizes CLI commands into core (`wukong --help`), advanced,
+and diagnostic/compatibility tiers (`wukong help --all`) and promotes
+`init`, `check`, `gate`, `summary`, and `provider test` as standalone top-level
+entry points while preserving all `0.1.x` compatibility commands.
 
 {: .highlight }
-Run `wukong --help` or `wukong <command> --help` against your installed version
-when exact options matter.
+Run `wukong --help`, `wukong help --all`, or `wukong <command> --help` against
+your installed version when exact options matter.
 
 ## Global options
 
@@ -53,9 +53,57 @@ one compatibility window, maps to YOLO, and prints a warning.
 
 ## Primary workflow
 
+### `wukong init`
+
+Detect project toolchains, scaffold `.wukong/checks.json` and
+`.wukong/review-policy.md`, and guide provider setup and connectivity verification.
+
+```bash
+wukong init
+wukong init --yes
+wukong init --dry-run
+```
+
+### `wukong check`
+
+Run deterministic project checks and read-only risk scan offline without invoking
+an AI reviewer. Output explicitly includes `reviewer: not_run` so offline check
+passes are never mistaken for a complete Gate `PASS`.
+
+```bash
+wukong check
+wukong check --json
+```
+
+### `wukong gate`
+
+Run checks, risk scan, and an isolated fresh-context reviewer directly against
+the current working tree or `git diff` without starting `/loop`. Exits with
+`0` (`PASS`), `1` (`NEEDS_WORK`), or `2` (`ERROR`).
+
+```bash
+wukong gate
+wukong gate --diff HEAD~1..HEAD
+wukong gate --summary
+wukong gate --json
+```
+
+### `wukong summary`
+
+Render or save a sanitized PR-ready Markdown Delivery Proof Card from a previous
+`gate` or `loop` run, disclosing unverified areas and excluding source code,
+diffs, transcripts, secrets, and home paths by default.
+
+```bash
+wukong summary
+wukong summary --save .wukong/proof-card.md
+wukong summary --run-id <runId>
+```
+
 ### `wukong`
 
-Launch the interactive TUI.
+Launch the interactive TUI. `/help` shows the 8 core slash commands; run
+`/help --all` (or `/help advanced`) to view advanced slash commands.
 
 ```bash
 wukong
@@ -115,6 +163,9 @@ transmission on the user's behalf.
 | `--trust-review-subject <challenge>` | Confirm the short-lived local broker read scope |
 | `--ack-review-subject <digest>` | Consent to the exact run-scoped files/evidence and BYOK provider destination |
 | `--dry-run` | Print the complete Finish Line proposal without creating trust, contract, or run state |
+| `--plan-out <file>` | Write a secret-free reviewable run-plan JSON during `--dry-run` (10-minute validity window) |
+| `--plan <file>` | Start headless Loop from a saved `--plan-out` JSON file |
+| `--approve-plan <digest>` | Single digest confirming all approvals bound inside `--plan <file>` |
 | `--until <condition>` | Compatibility option; all values map to the unified proof gate |
 
 The Loop confirms and freezes the Finish Line,
@@ -205,14 +256,19 @@ Code and Grok use the canonical source arguments and do not add more aliases.
 
 ### `wukong provider`
 
-Manage providers non-interactively:
+Configure providers non-interactively and test explicit model connectivity:
 
 ```bash
 wukong provider list
+wukong provider test [providerId]
 wukong provider catalog --help
 wukong provider add <registry-url>
 wukong provider remove <provider-id>
 ```
+
+`wukong provider test` classifies `ok`, `auth-failed`, `not-found`, `network`,
+`timeout`, and `offline` outcomes without logging API keys, query credentials,
+or raw response bodies.
 
 Inside the TUI, `/provider` opens the guided provider manager.
 

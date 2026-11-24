@@ -10,6 +10,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-24
+
+### Added
+- Add `wukong init` to detect Node (`pnpm` / `npm` / `yarn`), Python, Rust, Go,
+  and monorepo toolchains, scaffold `.wukong/checks.json` and
+  `.wukong/review-policy.md`, and guide provider setup and verification.
+- Add `wukong provider test [providerId]` for explicit connectivity testing with
+  clear `ok` / `auth-failed` / `not-found` / `network` / `timeout` / `offline`
+  status classification and zero secret leakage.
+- Add `wukong check` for offline deterministic project checks and risk scans
+  (explicitly reporting `reviewer: not_run`).
+- Add `wukong gate` for standalone `checks + risk scan + fresh-context review`
+  verification directly against working tree changes or `git diff`, returning
+  `PASS`, `NEEDS_WORK`, or `ERROR`.
+- Add `wukong summary` and `wukong gate --summary` to render or save a sanitized
+  PR-ready Markdown Delivery Proof Card that discloses unverified areas and
+  excludes source, diff, transcript, secrets, and home paths by default.
+- Add single-confirm headless Loop run-plans via `--dry-run --plan-out <file>`
+  and `--plan <file> --approve-plan <digest>`.
+
+### Changed
+- Converge CLI `--help` to 8 core commands with full command discovery via
+  `wukong help --all` and converge TUI core commands from 13 to 8 (`/help --all`).
+- Align `install.sh`, postinstall quickstarts, and `wukong doctor` around
+  `wukong init` → `wukong check` → `wukong gate`.
+- Preserve full `0.1.x` compatibility for `verify`, `scan`, `proof`, `judge`,
+  `guard`, legacy `--until` options, and existing Loop flags under the free,
+  local-first, MIT-licensed BYOK boundary.
+
 ## [0.1.2] - 2026-10-24
 
 ### Changed
