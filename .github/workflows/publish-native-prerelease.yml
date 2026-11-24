@@ -42,6 +42,7 @@ jobs:
   validate-attest-publish:
     name: Validate draft, attest, and publish immutable prerelease
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     outputs:
       previous_latest_tag: ${{ steps.identity.outputs.previous_latest_tag }}
       version: ${{ steps.identity.outputs.version }}
@@ -55,15 +56,15 @@ jobs:
       IMMUTABLE_POLICY_VERIFIED: ${{ inputs.immutable_policy_verified }}
     steps:
       - name: Checkout exact public distribution commit
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.distribution_sha }}
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Validate exact draft identity and download all assets
         id: identity
@@ -95,7 +96,7 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Attest all six release archives from the public repository
-        uses: actions/attest-build-provenance@43d14bc2b83dec42d39ecae14e916627a18bb661 # v3
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: release-assets/*.zip
 
@@ -155,18 +156,20 @@ jobs:
           - os: windows-11-arm
             target: win32-arm64
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     env:
       RELEASE_TAG: ${{ inputs.release_tag }}
+      PREVIOUS_LATEST_TAG: ${{ needs.validate-attest-publish.outputs.previous_latest_tag }}
       VERSION: ${{ needs.validate-attest-publish.outputs.version }}
       TARGET: ${{ matrix.target }}
     steps:
       - name: Checkout exact canonical installer
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.distribution_sha }}
           persist-credentials: false
 
-      - name: Download and smoke POSIX archive, installer, and v0.0.22 upgrade
+      - name: Download and smoke POSIX archive, installer, and previous-stable upgrade
         if: runner.os != 'Windows'
         shell: bash
         run: |
@@ -192,7 +195,7 @@ jobs:
           WUKONG_VERSION="$RELEASE_TAG" WUKONG_INSTALL_DIR="$FRESH/installed" sh install.sh
           "$FRESH/installed/wukong" --version | grep -F "$VERSION"
 
-          WUKONG_VERSION=v0.0.22 WUKONG_INSTALL_DIR="$UPGRADE/bin" sh install.sh
+          WUKONG_VERSION="$PREVIOUS_LATEST_TAG" WUKONG_INSTALL_DIR="$UPGRADE/bin" sh install.sh
           WUKONG_CODE_HOME="$STATE/upgrade" WUKONG_CODE_NO_AUTO_UPDATE=1 \
             WUKONG_CODE_CATALOG_OFFLINE=1 WUKONG_TELEMETRY=0 \
             "$UPGRADE/bin/wukong" provider list --json >/dev/null
@@ -201,7 +204,7 @@ jobs:
           "$UPGRADE/bin/wukong" --version | grep -F "$VERSION"
           cmp "$UPGRADE/config-before.toml" "$STATE/upgrade/config.toml"
 
-      - name: Download and smoke Windows archive and v0.0.22 replacement
+      - name: Download and smoke Windows archive and previous-stable replacement
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
@@ -230,16 +233,17 @@ jobs:
             throw 'Candidate version mismatch'
           }
           & $candidateExe provider list --json | Out-Null
-          $oldBase = "https://github.com/$env:GITHUB_REPOSITORY/releases/download/v0.0.22"
+          $oldBase = "https://github.com/$env:GITHUB_REPOSITORY/releases/download/$env:PREVIOUS_LATEST_TAG"
           Invoke-WebRequest -Uri "$oldBase/$archive" -OutFile (Join-Path $root 'old.zip')
           Expand-Archive -LiteralPath (Join-Path $root 'old.zip') -DestinationPath $installed
           $installedExe = Join-Path $installed 'wukong.exe'
-          if (-not ((& $installedExe --version) | Select-String -Quiet -SimpleMatch '0.0.22')) {
+          $baselineVersion = $env:PREVIOUS_LATEST_TAG.TrimStart('v')
+          if (-not ((& $installedExe --version) | Select-String -Quiet -SimpleMatch $baselineVersion)) {
             throw 'Baseline version mismatch'
           }
           & $installedExe provider list --json | Out-Null
           $configHash = (Get-FileHash (Join-Path $state 'config.toml')).Hash
-          $backup = Join-Path $installed 'wukong-v0.0.22.exe'
+          $backup = Join-Path $installed "wukong-$($env:PREVIOUS_LATEST_TAG).exe"
           Move-Item $installedExe $backup
           try {
             Copy-Item $candidateExe $installedExe
@@ -263,6 +267,7 @@ jobs:
       - validate-attest-publish
       - public-smoke
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     env:

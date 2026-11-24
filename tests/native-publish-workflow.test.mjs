@@ -9,7 +9,7 @@ test('public repository owns prerelease mutation and attestation with its epheme
   assert.match(source, /permissions:\n  contents: write\n  id-token: write\n  attestations: write/u);
   assert.match(source, /GH_TOKEN: \$\{\{ github\.token \}\}/u);
   assert.doesNotMatch(source, /WUKONG_PUBLIC_RELEASE_TOKEN/u);
-  assert.match(source, /actions\/attest-build-provenance@43d14bc/u);
+  assert.match(source, /actions\/attest-build-provenance@4d10147/u);
   assert.match(source, /--draft=false --prerelease --latest=false/u);
   assert.match(source, /immutable_policy_verified:/u);
   assert.match(source, /test "\$IMMUTABLE_POLICY_VERIFIED" = "true"/u);
@@ -32,7 +32,7 @@ test('publication is gated by exact draft bytes and followed by six-platform ano
   assert.doesNotMatch(source, /commits\/\$\{RELEASE_TAG\}/u);
   assert.equal((source.match(/target: (?:linux|darwin|win32)-/gu) ?? []).length, 6);
   assert.match(source, /WUKONG_VERSION="\$RELEASE_TAG"/u);
-  assert.match(source, /WUKONG_VERSION=v0\.0\.22/u);
+  assert.match(source, /WUKONG_VERSION="\$PREVIOUS_LATEST_TAG"/u);
   assert.match(source, /Replacement changed existing config/u);
   assert.match(source, /Preserve stable latest after public smoke/u);
   assert.match(source, /gh release view --repo "\$GITHUB_REPOSITORY"/u);
